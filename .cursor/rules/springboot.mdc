@@ -1,0 +1,90 @@
+---
+description: Java 25 + Spring Boot standards for reservation service development
+alwaysApply: true
+---
+
+# Spring Boot Java 25 Standards
+
+Apply these conventions for all backend work in this project.
+
+## Language and Naming
+
+- Write all class, method, attribute, variable, package, and constant names in English.
+- Use clear, domain-oriented names (`ReservationService`, `CreateReservationRequest`).
+- Follow standard Java naming: `PascalCase` for classes, `camelCase` for methods/fields, `UPPER_SNAKE_CASE` for constants.
+
+## Java 25 and Code Quality
+
+- Target Java 25 language features when they improve readability and safety.
+- Prefer immutability: use `final` fields where possible and avoid shared mutable state.
+- Keep methods focused and short; extract private helpers for complex logic.
+- Favor composition over inheritance unless inheritance is clearly justified.
+- Use `Optional` only for return types, not for entity fields or DTO attributes.
+
+## Spring Boot Service Practices
+
+- Keep controller logic thin; orchestration and business rules belong in services.
+- Use constructor injection exclusively (no field injection).
+- Validate input with Bean Validation (`@Valid`, `@NotNull`, `@Size`, etc.).
+- Handle errors with centralized exception handling (`@RestControllerAdvice`).
+- Keep persistence concerns in repositories; do not leak database entities directly to external API contracts.
+
+## DTO Rules
+
+- DTOs must be implemented as Java `record`.
+- Separate request and response DTOs explicitly.
+- Do not expose internal entities directly in API responses.
+- Map entities to DTOs through dedicated mapper code (manual or mapper component).
+
+## Javadoc Rules
+
+- Every public method must have updated Javadoc in English.
+- Javadoc must describe purpose, parameters, return value, and thrown exceptions when applicable.
+- Update Javadoc whenever public behavior changes.
+
+### Javadoc template
+
+```java
+/**
+ * Creates a new reservation for the provided guest and date range.
+ *
+ * @param request request payload containing reservation input data
+ * @return created reservation response
+ * @throws ReservationConflictException when dates overlap an existing reservation
+ */
+public ReservationResponse createReservation(CreateReservationRequest request) {
+    // ...
+}
+```
+
+## Project Structure (reservation-backend)
+
+Use and preserve this structure for new code:
+
+```text
+reservation-backend/
+  src/main/java/ar/dev/josecammisi/web/reservation_backend/
+    config/
+    controller/
+    dto/
+      request/
+      response/
+    exception/
+    mapper/
+    model/
+    repository/
+    service/
+      impl/
+  src/main/resources/
+    application.properties
+  src/test/java/ar/dev/josecammisi/web/reservation_backend/
+    controller/
+    service/
+    repository/
+```
+
+## Testing and Reliability
+
+- Add or update tests for any behavior change (unit tests first, integration tests where needed).
+- Prefer deterministic tests with clear Arrange-Act-Assert structure.
+- Cover validations, business rules, and error scenarios.
